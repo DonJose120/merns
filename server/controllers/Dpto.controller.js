@@ -1,11 +1,11 @@
-import Pais from '../models/pais.model';
+import Dpto from '../models/Dpto.model';
 import merge from 'lodash/merge';
 import errorHandler from './../helpers/dbErrorHandler';
 
 const create = async (req, res) => {
-  const pais = new Pais(req.body);
+  const dpto = new Dpto(req.body);
   try {
-    await pais.save();
+    await dpto.save();
     return res.status(200).json({
       message: 'Successfully signed up!'
     });
@@ -18,78 +18,78 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
   try {
-    let pais = await Pais.find().select(
-      '_id name'
-    );
-    res.json(pais);
+    let dptos = await Dpto.find().select('name created');
+    res.json(dptos);
+
   } catch (err) {
     return res.status('400').json({
-      error: errorHandler.getErrorMessage(err)
-    });
+      error:errorHandler.getErrorMessage(err)
+    })
   }
 };
 
-const paisById = async (req, res, next, id) => {
+const dptoById =async (req, res, next, id) => {
   try {
-    let pais = await Pais.findById({_id: id});
-    if (!pais) {
+    let dpto = await Dpto.findById({_id: id});
+    if(!dpto) {
       return res.status(400).json({
-        error: 'Pais Not Found'
+        error:'Dpto not found'
       });
     }
-    req.profile= pais;
+    req.profile = dpto;
     next();
   } catch (err) {
     console.log(err);
     return res.status(400).json({
-      error:'Could not retivese Pais'
+      error:"Could not retrieve Dpto"
     });
   }
 };
 
 const read = (req, res) => {
   req.profile.salt = undefined;
-  req.name = 'aa';
+  req.name = 'ss';
   return res.json(req.profile);
 };
 
 const update = async (req, res, next) => {
   try {
-    let pais = req.profile;
-    pais = merge(pais, req.body);
+    let dpto = req.profile;
+    dpto = merge(dpto, req.body);
 
-    pais.update = Date.now();
-    await pais.save();
-    pais.salt = '';
-    res.json(pais);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json({
-      error:errorHandler.getErrorMessage(err)
-    });
-  }
-};
-
-const remove = async (req, res, next) =>{
-  try {
-    console.log('deleted');
-    let pais = req.profile;
-    console.log('pais to remove', pais);
-    let deletedPais = await pais.deleteOne();
-    deletedPais.salt = '';
+    dpto.updated = Date.now();
+    await dpto.save();
+    dpto.salt = '';
+    res.json(dpto);
   } catch (err) {
     console.log(err);
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err)
     });
-    }
-  };
+  }
+};
 
-  export default{
-    create,
-    list,
-    read,
-    remove,
-    paisById,
-    update
+const remove = async (req, res, next) => {
+  try {
+    console.log('deleted');
+    let dpto = req.profile;
+    console.log('dpto to remove', dpto);
+    let deletedDpto= await dpto.deleteOne();
+    deletedDpto.salt = '';
+    res.json(deletedDpto);
+  } catch(err) {
+    console.log(err);
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    });
+  }
+};
+
+export default {
+  create,
+  list,
+  read,
+  remove,
+  dptoById,
+  update
 };

@@ -155,8 +155,6 @@ const defaultPhoto = (req, res) => {
 
 ////Se usa el Push ya que se debe agg un valor al array del usuario///////
 const addFollowing = async (req, res, next) => {
-  console.log('asdadasdsdasd');
-  console.log(req.body);
   try {
     await User.findByIdAndUpdate(req.body.userId, {
       $push: { following: req.body.followId }

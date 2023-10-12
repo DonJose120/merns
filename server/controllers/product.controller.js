@@ -20,7 +20,7 @@ const list = async (req, res) => {
   try {
     let products = await Product.find().select(
       '_id name price stock'
-    );
+    ).populate('category', '_id name')
     res.json(products);
 
   } catch (err) {

@@ -15,6 +15,10 @@ const ProductSchema = new mongoose.Schema([{
     type: Number,
     required: `price ${required}`
   },
+  category: {
+type: mongoose.Schema.ObjectId,
+ref: 'Category'
+  },
   create: {
     type: Date,
     default: Date.now
