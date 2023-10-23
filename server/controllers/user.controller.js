@@ -200,6 +200,42 @@ const removerFollowing = async (req, res, next) => {
   }
 };
 
+const addLike = async (req, res) => {
+  try {
+    const result = await User.findByIdAndUpdate(
+      req.body.likeId,
+      { $push: { likes: req.body.userId } },
+      { new: true }
+    )
+
+      .populate('likes', '_id name')
+      .exec();
+
+    res.json(result);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    });
+  }
+};
+
+const removeLike = async (req, res) => {
+  try {
+    const result = await User.findByIdAndUpdate(
+      req.body.unlikeId,
+      { $pull: { likes: req.body.userId } },
+      { new: true }
+    )
+      .populate('likes', '_id name')
+      .exec();
+    res.json(result);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage()
+    });
+  }
+};
+
 export default {
   create,
   list,
@@ -211,5 +247,8 @@ export default {
   addFollower,
   addFollowing,
   removeFollower,
-  removerFollowing
+  removerFollowing,
+  addLike,
+  removeLike
+
 };

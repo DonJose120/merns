@@ -24,6 +24,8 @@ import categoryRoutes from './routes/Category.routes';
 import productRoutes from './routes/product.router';
 import cityRoutes from './routes/City.router';
 import dptoRoutes from './routes/Dpto.router';
+import PostRoutes from './routes/Post.routes.js';
+import CommentRoutes from './routes/Comment.routes';
 
 import Template from './../template';
 
@@ -46,6 +48,9 @@ app.use('/', categoryRoutes);
 app.use('/', productRoutes);
 app.use('/', cityRoutes);
 app.use('/', dptoRoutes);
+app.use('/', PostRoutes);
+app.use('/', CommentRoutes);
+
 
 app.get('*', (req, res) => {
   const sheets = new ServerStyleSheets();
