@@ -5,6 +5,10 @@ import authCtrl from '../controllers/auth.controller';
 
 const router = express.Router();
 
+router.route('/api/post')
+.get(postCtrl.list)
+.post(postCtrl.create);
+
 router
   .route('/api/posts/feed/:userId')
   .get(authCtrl.requireSignin, postCtrl.listNewsFeed);
