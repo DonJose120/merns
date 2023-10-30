@@ -3,34 +3,41 @@ import mongoose from 'mongoose';
 const required = 'requerid';
 const PostSchema = new mongoose.Schema([
   {
-    title: {
+    text: {
       type: String,
-      required: `title ${required} `
+      required: `Text ${required} `
+    },
+     photo: {
+      data: Buffer,
+      contentType: String
     },
 
-    PostBy: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Post'
-    },
-    user: {
+    postedBy: {
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     },
+    // user: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: 'User'
+    // },
 
-    like:{
+    likes:[{
     type: mongoose.Schema.ObjectId,
     ref: 'User'
-    },
+    }],
 
-  comment:{
-    type: mongoose.Schema.ObjectId,
-    ref: 'User'
-    },
+  comment:[{
+    text:String,
+    created:{
+      type:Date,
+      default:Date.now
+    }
+    }],
 
-    create: {
-      type: Date,
-      default: Date.now
-    },
+    // create: {
+    //   type: Date,
+    //   default: Date.now
+    // },
     updated: Date
   }
 ]);

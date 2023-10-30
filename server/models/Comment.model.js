@@ -13,9 +13,18 @@ const CommentSchema = new mongoose.Schema([{
     trim: true,
     require: `post ${required} `
   },
-  like:{
+  user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User'
+  },
+  comments:{
+    type: mongoose.Schema.ObjectId,
+    ref: 'User'
+    },
+
+  like:{
+    type: mongoose.Schema.ObjectId,
+    ref: 'Like'
     },
 
   created: {

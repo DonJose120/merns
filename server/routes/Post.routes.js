@@ -1,41 +1,46 @@
-import express from "express";
+import express from 'express';
 import postCtrl from '../controllers/Post.controller';
 import userCtrl from '../controllers/user.controller';
 import authCtrl from '../controllers/auth.controller';
 
 const router = express.Router();
 
-router.route('/api/post')
-.get(postCtrl.list)
-.post(postCtrl.create);
+router
+  .route('/api/posts/feed/:userId')
+  .get(authCtrl.requireSignin, postCtrl.listNewsFeed);
 
-// router
-// .route('/api/users/comment')
-// .put(
-//   authCtrl.requireSignin,
-//   userCtrl.addComment
-// );
+router
+  .route('api/posts/by/:userId')
+  .get(authCtrl.requireSignin, postCtrl.listByUser);
 
+router
+  .route('/api//posts/new/:userId')
+  .post(authCtrl.requireSignin, postCtrl.create);
 
+router.route('/api//posts/photo/:postId').get(postCtrl.photo);
 
-  ///Permite ejecutar la funcionalidad de seguir usuarios///
-  router
-  .route('/api/users/like')
-  .put(
-    authCtrl.requireSignin,
-    userCtrl.addLike,
-    userCtrl.removeLike
-  );
+router
+  .route('/api/posts/like')
+  .put(authCtrl.requireSignin, postCtrl.Like);
 
-  ///Permite ejecutar la funcionalidad para dejar de seguir///
-  router
-  .route('/api/users/unlike')
-  .put(
-    authCtrl.requireSignin,
-    userCtrl.addLike,
-    userCtrl.removeLike
-  );
+router
+  .route('/api/posts/unlike')
+  .put(authCtrl.requireSignin, postCtrl.unLike);
 
-router.param('postCtrlId', postCtrl.postById);
+router
+  .route('/api/posts/:postId')
+  .delete(authCtrl.requireSignin, postCtrl.isPoster, postCtrl.remove);
+
+router
+  .route('/api/posts/comment')
+  .put(authCtrl.requireSignin, postCtrl.Comment);
+
+router
+  .route('/api/posts/uncomment')
+  .put(authCtrl.requireSignin, postCtrl.unComment);
+
+router.route('userId', userCtrl.userById);
+
+router.param('postId', postCtrl.postById);
 
 export default router;

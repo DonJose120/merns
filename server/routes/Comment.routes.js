@@ -7,6 +7,7 @@ router.route('/api/comments')
 .get(commentCtrl.list)
 .post(commentCtrl.create);
 
+
 router.param('commentId', commentCtrl.commentById);
 
 export default router;

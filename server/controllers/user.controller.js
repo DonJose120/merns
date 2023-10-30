@@ -38,7 +38,7 @@ const list = async (req, res) => {
 
 const userById = async (req, res, next, id) => {
   try {
-    let user = await User.findById({ _id: id })
+    let user = await User.findById({ _id:id })
       .populate('following', '_id name')
       .populate('followers', '_id name')
       .exec();
@@ -200,7 +200,7 @@ const removerFollowing = async (req, res, next) => {
   }
 };
 
-const addLike = async (req, res) => {
+const Like = async (req, res) => {
   try {
     const result = await User.findByIdAndUpdate(
       req.body.likeId,
@@ -219,7 +219,7 @@ const addLike = async (req, res) => {
   }
 };
 
-const removeLike = async (req, res) => {
+const unLike = async (req, res) => {
   try {
     const result = await User.findByIdAndUpdate(
       req.body.unlikeId,
@@ -236,6 +236,45 @@ const removeLike = async (req, res) => {
   }
 };
 
+const Comment = async (req, res) => {
+  try {
+    const result = await User.findByIdAndUpdate(
+      req.body.CommentId,
+      { $push: { Comments: req.body.userId } },
+      { new: true }
+    )
+
+      .populate('Comments', '_id name')
+      .exec();
+
+    res.json(result);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    });
+  }
+};
+
+const unComment = async (req, res) => {
+  try {
+    const result = await User.findByIdAndUpdate(
+      req.body.unCommentId,
+      { $pull: { Comments: req.body.userId } },
+      { new: true }
+    )
+      .populate('Comments', '_id name')
+      .exec();
+    res.json(result);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage()
+    });
+  }
+};
+
+
+
+
 export default {
   create,
   list,
@@ -248,7 +287,9 @@ export default {
   addFollowing,
   removeFollower,
   removerFollowing,
-  addLike,
-  removeLike
+  Like,
+  unLike,
+  Comment,
+  unComment
 
 };
