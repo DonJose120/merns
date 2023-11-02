@@ -18,7 +18,7 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
   try {
-    let comments = await Comment.find().select('name post created');
+    let comments = await Comment.find().select('text post created');
     res.json(comments);
 
   } catch (err) {

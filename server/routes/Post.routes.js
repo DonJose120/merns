@@ -10,37 +10,37 @@ router.route('/api/post')
 .post(postCtrl.create);
 
 router
-  .route('/api/posts/feed/:userId')
+  .route('/api/post/feed/:userId')
   .get(authCtrl.requireSignin, postCtrl.listNewsFeed);
 
 router
-  .route('api/posts/by/:userId')
+  .route('api/post/by/:userId')
   .get(authCtrl.requireSignin, postCtrl.listByUser);
 
 router
-  .route('/api//posts/new/:userId')
+  .route('/api//post/new/:userId')
   .post(authCtrl.requireSignin, postCtrl.create);
 
-router.route('/api//posts/photo/:postId').get(postCtrl.photo);
+router.route('/api//post/photo/:postId').get(postCtrl.photo);
 
 router
-  .route('/api/posts/like')
+  .route('/api/post/like')
   .put(authCtrl.requireSignin, postCtrl.Like);
 
 router
-  .route('/api/posts/unlike')
+  .route('/api/post/unlike')
   .put(authCtrl.requireSignin, postCtrl.unLike);
 
 router
-  .route('/api/posts/:postId')
+  .route('/api/post/:postId')
   .delete(authCtrl.requireSignin, postCtrl.isPoster, postCtrl.remove);
 
 router
-  .route('/api/posts/comment')
+  .route('/api/post/comment')
   .put(authCtrl.requireSignin, postCtrl.Comment);
 
 router
-  .route('/api/posts/uncomment')
+  .route('/api/post/uncomment')
   .put(authCtrl.requireSignin, postCtrl.unComment);
 
 router.route('userId', userCtrl.userById);
