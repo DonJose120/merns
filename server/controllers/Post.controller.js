@@ -4,7 +4,8 @@ import Post from '../models/Post.model';
 import errorHandler from '../helpers/dbErrorHandler';
 ///////Se le agrega la importacion fs //////////
 import fs from 'fs';
-import { error } from 'console';
+import { json } from 'body-parser';
+
 
 ////////// Se le agrega listNewsFeed para la lista de noticias//////////
 
@@ -45,13 +46,33 @@ const listByUser = async (req, res) => {
   }
 };
 
-const create = async (req, res) => {
+const postById = async (req, res, next, id) => {
+  try {
+    let post = await Post.findById(id)
+      .populate('postdBy', '_id name')
+      .exect();
+    if (!post) {
+      return res.status(400).json({
+        error: 'post Not found'
+      });
+    }
+    req.post = post;
+    next();
+  } catch (err) {
+    return res.status(400).json({
+      error: 'Could not retivese Post'
+    });
+  }
+};
+
+const create = (req, res, next) => {
+  
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: 'Imagen could not be uploaded'
+        error: 'Image could not be uploaded'
       });
     }
     let post = new Post(fields);
@@ -71,11 +92,12 @@ const create = async (req, res) => {
       });
     }
   });
-};
+
+}
 
 const list = async (req, res) => {
   try {
-    let posts = await Post.find().select('_id name comments');
+    let posts = await Post.find().select('_id text comments');
 
     res.json(posts);
   } catch (err) {
@@ -86,24 +108,6 @@ const list = async (req, res) => {
 };
 ///// se crea bien el PostById ////////////
 
-const postById = async (req, res, next, id) => {
-  try {
-    let post = await Post.findById(id)
-      .populate('postdBy', '_id name')
-      .exect();
-    if (!post) {
-      return res.status(400).json({
-        error: 'post Not found'
-      });
-    }
-    req.post = post;
-    next();
-  } catch (err) {
-    return res.status(400).json({
-      error: 'Could not retivese Post'
-    });
-  }
-};
 
 const isPoster = (req, res) => {
   let isPoster =
@@ -157,7 +161,7 @@ const Like = async (req, res) => {
   try {
     let result = await Post.findByIdAndUpdate(
       req.body.postId,
-      { $push: { likes: req.body.userId } },
+      { $push: { likes: req.body.likeId } },
       { new: true }
     );
     res.status(200).json(result);
@@ -172,7 +176,7 @@ const unLike = async (req, res) => {
   try {
     let result = await Post.findByIdAndUpdate(
       req.body.postId,
-      { $pull: { likes: req.body.userId } },
+      { $pull: { likes: req.body.likeId } },
       { new: true }
     );
     res.status(200).json(result);
@@ -189,17 +193,18 @@ const Comment = async (req, res) => {
   try {
     let result = await Post.findByIdAndUpdate(
       req.body.postId,
-      { $push: { comments: comment } },
+      { $push: { comments: comment }},
       { new: true }
     )
       .populate('comments.postedBy', '_id name')
       .populate('postedBy', '_id name')
       .exec();
     res.status(200).json(result);
+   
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
-      dest: 'desd'
+      dest: 'Eso esta Malo'
     });
   }
 };
